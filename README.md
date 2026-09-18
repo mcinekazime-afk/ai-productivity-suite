@@ -1,4 +1,16 @@
-# AI Workplace Productivity Assistant
+
+
+
+
+Build three real AI tools (dynamic generation via Lovable AI, structured prompts, Zod-validated outputs — never hardcoded/placeholder/canned responses):
+
+1. Smart Email Generator — fields: purpose, recipient/context, key points, optional instructions; tone picker (Formal/Friendly/Persuasive); returns editable subject + body with regenerate, copy, clear.
+2. Meeting Notes Summarizer — paste notes; AI returns summary, action items, decisions, deadlines; editable with regenerate, copy, clear.
+3. AI Task Planner — inputs: tasks, priorities, working hours, deadlines; choose daily or weekly; AI returns a timeline-style schedule; editable with regenerate.
+
+Plus a Dashboard overview with quick-access cards and a Settings view. Show loading and error states; surface AI errors directly, no fake fallbacks. Show the responsible-AI disclaimer throughout: "AI-generated content may contain errors. Always review and verify AI outputs before sending emails, making decisions, or acting on AI recommendations."
+
+---
 
 A modern, responsive SaaS web application that helps professionals automate everyday workplace tasks using AI. Built with a premium **gold-and-black** visual identity, the app delivers genuinely AI-powered, dynamically generated results — no hardcoded, placeholder, or simulated responses.
 
