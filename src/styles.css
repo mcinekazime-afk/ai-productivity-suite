@@ -59,42 +59,57 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface-raised: var(--surface-raised);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-success: var(--success);
+  --color-overlay: var(--overlay);
+  --font-display: "Manrope", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --shadow-card: 0 16px 45px -28px var(--shadow-color);
+  --shadow-gold: 0 12px 34px -18px var(--gold-shadow);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --radius: 0.5rem;
+  --background: oklch(0.13 0.008 75);
+  --foreground: oklch(0.93 0.012 85);
+  --card: oklch(0.17 0.009 75);
+  --card-foreground: oklch(0.93 0.012 85);
+  --popover: oklch(0.19 0.01 75);
+  --popover-foreground: oklch(0.93 0.012 85);
+  --primary: oklch(0.78 0.15 85);
+  --primary-foreground: oklch(0.15 0.015 75);
+  --secondary: oklch(0.24 0.012 75);
+  --secondary-foreground: oklch(0.9 0.01 85);
+  --muted: oklch(0.22 0.01 75);
+  --muted-foreground: oklch(0.68 0.018 80);
+  --accent: oklch(0.25 0.025 80);
+  --accent-foreground: oklch(0.86 0.1 85);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.29 0.012 75);
+  --input: oklch(0.31 0.014 75);
+  --ring: oklch(0.78 0.15 85);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --sidebar: oklch(0.105 0.007 75);
+  --sidebar-foreground: oklch(0.92 0.012 85);
+  --sidebar-primary: oklch(0.78 0.15 85);
+  --sidebar-primary-foreground: oklch(0.15 0.015 75);
+  --sidebar-accent: oklch(0.18 0.015 78);
+  --sidebar-accent-foreground: oklch(0.95 0.01 85);
+  --sidebar-border: oklch(0.24 0.012 75);
+  --sidebar-ring: oklch(0.78 0.15 85);
+  --sidebar-muted: oklch(0.61 0.018 80);
+  --surface-raised: oklch(0.19 0.01 75);
+  --success: oklch(0.7 0.15 155);
+  --overlay: oklch(0.05 0.005 75 / 75%);
+  --shadow-color: oklch(0.05 0.01 75 / 65%);
+  --gold-shadow: oklch(0.73 0.15 85 / 45%);
 }
 
 .dark {
@@ -140,5 +155,20 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    background-image: linear-gradient(to right, color-mix(in oklch, var(--border) 20%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklch, var(--border) 20%, transparent) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
+
+  input, textarea, button { letter-spacing: 0; }
+  input, textarea { background-color: var(--surface-raised); }
+}
+
+@layer components {
+  .workspace-panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); padding: 1.5rem; box-shadow: var(--shadow-card); }
+  .priority-high, .priority-medium, .priority-low { flex-shrink: 0; border-radius: 999px; padding: .2rem .5rem; font-size: .625rem; font-weight: 700; text-transform: uppercase; }
+  .priority-high { background: color-mix(in oklch, var(--destructive) 18%, transparent); color: var(--destructive); }
+  .priority-medium { background: color-mix(in oklch, var(--primary) 16%, transparent); color: var(--primary); }
+  .priority-low { background: color-mix(in oklch, var(--success) 15%, transparent); color: var(--success); }
 }
