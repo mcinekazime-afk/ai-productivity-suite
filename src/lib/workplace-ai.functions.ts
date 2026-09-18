@@ -51,46 +51,45 @@ const plannerOutput = z.object({
   recommendations: z.array(z.string()),
 });
 
-function promptFor(data: z.infer<typeof requestSchema>) {
-  if (data.tool === "email") {
-    return {
-      schema: emailOutput,
-      prompt: `Write a unique, polished workplace email using only the supplied facts.\nTone: ${data.tone}\nPurpose: ${data.purpose}\nRecipient and context: ${data.recipient}\nKey points: ${data.keyPoints}\nAdditional instructions: ${data.instructions || "None"}\nReturn a concise subject and a complete send-ready body. Never invent names, dates, promises, or facts.`,
-    };
-  }
-  if (data.tool === "meeting") {
-    return {
-      schema: meetingOutput,
-      prompt: `Analyze these meeting notes faithfully. Return a concise executive summary, explicit action items, confirmed decisions, and deadlines. If a category is absent, return an empty list. Never invent owners, dates, or decisions.\n\nMEETING NOTES:\n${data.notes}`,
-    };
-  }
-  return {
-    schema: plannerOutput,
-    prompt: `Create a realistic ${data.period.toLowerCase()} work schedule based only on this brief. Respect working hours, deadlines, and priorities; include breaks and focused work blocks where appropriate.\nTasks: ${data.tasks}\nPriorities: ${data.priorities}\nAvailable working hours: ${data.hours}\nDeadlines: ${data.deadlines || "None specified"}\nUse clear time/day labels, task names, short practical details, and priority levels.`,
-  };
-}
-
 export const generateWorkplaceContent = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => requestSchema.parse(input))
   .handler(async ({ data }) => {
     const apiKey = process.env["LOVABLE_API_KEY"];
     if (!apiKey) throw new Error("AI is not configured for this workspace.");
 
-    const config = promptFor(data);
     try {
+      const providerOptions = {
+        openai: {
+          forceReasoning: true,
+          reasoningEffort: "low" as const,
+          reasoningSummary: "auto" as const,
+          store: false,
+          include: ["reasoning.encrypted_content"],
+        },
+      };
+      if (data.tool === "email") {
+        const result = streamText({
+          model: createWorkplaceModel(apiKey),
+          output: Output.object({ schema: emailOutput }),
+          prompt: `Write a unique, polished workplace email using only the supplied facts.\nTone: ${data.tone}\nPurpose: ${data.purpose}\nRecipient and context: ${data.recipient}\nKey points: ${data.keyPoints}\nAdditional instructions: ${data.instructions || "None"}\nReturn a concise subject and a complete send-ready body. Never invent names, dates, promises, or facts.`,
+          providerOptions,
+        });
+        return await result.output;
+      }
+      if (data.tool === "meeting") {
+        const result = streamText({
+          model: createWorkplaceModel(apiKey),
+          output: Output.object({ schema: meetingOutput }),
+          prompt: `Analyze these meeting notes faithfully. Return a concise executive summary, explicit action items, confirmed decisions, and deadlines. If a category is absent, return an empty list. Never invent owners, dates, or decisions.\n\nMEETING NOTES:\n${data.notes}`,
+          providerOptions,
+        });
+        return await result.output;
+      }
       const result = streamText({
         model: createWorkplaceModel(apiKey),
-        output: Output.object({ schema: config.schema }),
-        prompt: config.prompt,
-        providerOptions: {
-          openai: {
-            forceReasoning: true,
-            reasoningEffort: "low",
-            reasoningSummary: "auto",
-            store: false,
-            include: ["reasoning.encrypted_content"],
-          },
-        },
+        output: Output.object({ schema: plannerOutput }),
+        prompt: `Create a realistic ${data.period.toLowerCase()} work schedule based only on this brief. Respect working hours, deadlines, and priorities; include breaks and focused work blocks where appropriate.\nTasks: ${data.tasks}\nPriorities: ${data.priorities}\nAvailable working hours: ${data.hours}\nDeadlines: ${data.deadlines || "None specified"}\nUse clear time/day labels, task names, short practical details, and priority levels.`,
+        providerOptions,
       });
       return await result.output;
     } catch (error) {
